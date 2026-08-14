@@ -1,0 +1,43 @@
+(()=>{
+const V={
+ politics:{roman:'I',title:'The State Never Sleeps',short:'Republic & Public Life',file:'events-politics.html',accent:'#e9bd68',desc:'Parliament, federal bargaining, courts, civil servants and the small administrative decisions that keep a continental state moving.'},
+ economy:{roman:'II',title:'The Cost of Momentum',short:'Economy & Technology',file:'events-economy.html',accent:'#68b483',desc:'Factories, suppliers, ports, data centres, currencies and the bottlenecks created by success itself.'},
+ society:{roman:'III',title:'A Country Lived at Street Level',short:'Society, Culture & Climate',file:'events-society.html',accent:'#e19887',desc:'Schools, languages, heat, floods, festivals, transport and the ordinary places where national policy becomes a human day.'},
+ world:{roman:'IV',title:'Beyond the Map’s Edge',short:'World, Diplomacy & Space',file:'events-world.html',accent:'#91a9e5',desc:'Orbit, energy shocks, neighbours, standards, summits and the diplomatic weight of a country that cannot isolate itself from the world.'},
+ ideology:{roman:'V',title:'The Roads India Chose',short:'Ideology & Regime',file:'events-ideology.html',accent:'#c58778',desc:'Events that exist only because India became a different political system: democratic, communist, fascist or imperial.'},
+ borders:{roman:'VI',title:'When the Map Pushes Back',short:'Borders & Regional Orders',file:'events-borders.html',accent:'#b18bcf',desc:'Bangladesh, Nepal, Pakistan, Sri Lanka, the Maldives and China reacting to Indian power after the focus tree leaves the domestic arena.'}
+};
+const num=e=>Number(e.id.split('.').pop());
+const cls=s=>s==='Universal'?'universal':s==='Path-reactive'?'reactive':'specific';
+const getAll=()=>[...(window.PA107_GENERAL||[]),...(window.PA107_PATHS||[])].sort((a,b)=>num(a)-num(b));
+function freshScript(src){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src+(src.includes('?')?'&':'?')+'rev=107-zero-fix';s.onload=()=>resolve();s.onerror=()=>reject(new Error('Could not load '+src));document.head.appendChild(s)})}
+async function ensureData(){let all=getAll();if(all.length)return all;try{if(!window.PA107_GENERAL||!window.PA107_GENERAL.length)await freshScript('events-general-107.js');if(!window.PA107_PATHS||!window.PA107_PATHS.length)await freshScript('events-paths-107.js')}catch(e){console.error(e)}return getAll()}
+function badges(e){return `<div class="badges"><span class="badge ${cls(e.scope)}">${e.scope}</span>${e.tags.map(t=>`<span class="badge">${t}</span>`).join('')}</div>`}
+function nav(){return `<header class="evbar"><div class="evbar-in"><a class="evbrand" href="../../../../../../">PARADOX ATLAS<small>INDIA · EVENT ARCHIVE</small></a><nav class="evnav"><a href="./">Overview</a><a href="focus-tree.html">Focus Tree</a><a class="on" href="events.html">Events</a><a href="lore.html">Lore</a></nav><span class="evver">v1.0.7</span></div></header><div class="tricolor"></div>`}
+function tile(e){const v=V[e.volume];return `<a class="eventtile" data-s="${(e.id+' '+e.title+' '+e.teaser+' '+e.tags.join(' ')+' '+e.scope+' '+e.requires).toLowerCase().replaceAll('"','&quot;')}" data-scope="${cls(e.scope)}" href="${v.file}#${e.anchor}"><span class="eid">${e.id}</span><span><h3>${e.title}</h3><p>${e.teaser}</p>${badges(e)}</span></a>`}
+function errorState(where){where.innerHTML='<div class="eventnote" style="border-color:#b45c55"><b>Event data did not load.</b> The archive contains 69 events, but this browser did not receive the event dataset. Refresh once; the loader will request a cache-busted copy automatically.</div>'}
+async function bank(){
+ const all=await ensureData();
+ document.body.insertAdjacentHTML('afterbegin',nav());
+ const hero=document.getElementById('bankhero');
+ hero.innerHTML=`<div class="eyebrow">India · 2026 · 69 cinematic events · Version 1.0.7</div><h1>The Event Bank</h1><p class="lead">This archive is no longer a set of evenly portioned pop-ups. Some events can happen under almost any Indian government; others react to the national path; still others exist only because the player crossed an ideological or territorial threshold. Each event is a scene first—a room, a road, a station, a control centre, a flooded junction—and a modifier second.</p><div class="bankstats"><span>69 total events</span><span>6 uneven volumes</span><span>46 universal / broadly reactive stories</span><span>23 ideological & regional path events</span></div><div class="filters"><button class="on" data-filter="all">All events</button><button data-filter="universal">Universal</button><button data-filter="reactive">Path-reactive</button><button data-filter="specific">Path-specific</button></div><input class="eventsearch" id="eventsearch" placeholder="Search by title, path, place, institution or event ID…">`;
+ const vg=document.getElementById('volumegrid'),holder=document.getElementById('bankevents');
+ if(!all.length){errorState(vg);return}
+ Object.entries(V).forEach(([k,v])=>{const n=all.filter(e=>e.volume===k).length;vg.insertAdjacentHTML('beforeend',`<a class="volcard" style="--accent:${v.accent}" href="${v.file}"><small>Volume ${v.roman}</small><div class="count">${n}</div><h3>${v.short}</h3><p>${v.desc}</p></a>`)});
+ Object.entries(V).forEach(([k,v])=>{const evs=all.filter(e=>e.volume===k);holder.insertAdjacentHTML('beforeend',`<section class="banksection" data-volume-section="${k}"><h2>${v.roman}. ${v.short}</h2><p>${v.desc}</p><div class="eventindex">${evs.map(tile).join('')}</div></section>`)});
+ const q=document.getElementById('eventsearch'),buttons=[...document.querySelectorAll('[data-filter]')];let filter='all';
+ function run(){const s=q.value.toLowerCase().trim();document.querySelectorAll('.eventtile').forEach(x=>{const okS=!s||x.dataset.s.includes(s),okF=filter==='all'||x.dataset.scope===filter;x.classList.toggle('hidden',!(okS&&okF))});document.querySelectorAll('[data-volume-section]').forEach(sec=>{sec.style.display=sec.querySelector('.eventtile:not(.hidden)')?'':'none'})}
+ q.addEventListener('input',run);buttons.forEach(b=>b.addEventListener('click',()=>{buttons.forEach(x=>x.classList.remove('on'));b.classList.add('on');filter=b.dataset.filter;run()}));
+}
+async function volume(key){
+ const all=await ensureData(),v=V[key];
+ document.body.insertAdjacentHTML('afterbegin',nav());document.documentElement.style.setProperty('--accent',v.accent);
+ const hero=document.getElementById('volumehero'),main=document.getElementById('volumemain');
+ if(!all.length){hero.innerHTML=`<div class="countline">Event Volume ${v.roman} · v1.0.7</div><h1>${v.title}</h1>`;errorState(main);return}
+ const evs=all.filter(e=>e.volume===key);
+ hero.innerHTML=`<div class="countline">Event Volume ${v.roman} · ${evs.length} events · v1.0.7</div><h1>${v.title}</h1><p class="lead">${v.desc} The stories in this volume do not share a fixed rhythm: some are quiet administrative failures, some are public crises, some are consequences that only appear because the player chose a particular road.</p><div class="volumejump">${evs.map(e=>`<a href="#${e.anchor}">${e.id.split('.').pop()} · ${e.title}</a>`).join('')}</div>`;
+ evs.forEach(e=>{main.insertAdjacentHTML('beforeend',`<section class="eventstory" id="${e.anchor}"><div class="eventhead"><div><div class="eid">${e.id}</div>${badges(e)}<h2>${e.title}</h2></div><div class="require"><b>Fires under:</b><br>${e.requires}</div></div>${e.paras.map((p,i)=>`<p class="${i===0?'scene':''}">${p}</p>`).join('')}<div class="choices"><div class="choice"><b>${e.choices[0].title}</b><small>${e.choices[0].effect}</small></div><div class="choice alt"><b>${e.choices[1].title}</b><small>${e.choices[1].effect}</small></div></div></section>`)});
+ main.insertAdjacentHTML('beforeend',`<div class="eventnote"><b>Atlas rule:</b> Path-specific and territorial events are alternate-history gameplay. They describe political, institutional and social consequences at strategic level; they are not claims that these events occurred in reality.</div>`)
+}
+window.PA107={volumes:V,get events(){return getAll()},bank,volume};
+})();
