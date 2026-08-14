@@ -1,0 +1,18 @@
+PARADOX ATLAS — VERSION 1.0.4
+India Immersion Pass
+
+Release highlights:
+- 143-focus India tree retained and compacted into a 7700 x 4300 canvas.
+- Primary prerequisite lines visible by default; secondary multi-parent dependencies hidden unless requested or highlighted.
+- Tighter node spacing, hover-connected line emphasis, pan/zoom, search, filters, fit/top/100% controls.
+- Every focus routes to the v1.0.4 immersive dossier reader.
+- Dossiers render eight substantial lore paragraphs covering scene, institutions, people, political logic, implementation, tradeoffs, external reaction and long-term memory.
+- Selected focuses include photographic interludes.
+- India visual system rebuilt around saffron, marigold, indigo, peacock teal, forest green, sandstone, vermilion and warm ivory.
+- India country overview and South Asia entry layer refreshed for v1.0.4.
+
+Canonical India URL:
+/eras/modern/contemporary/2026/south-asia/india/
+
+Canonical focus tree:
+/eras/modern/contemporary/2026/south-asia/india/focus-tree.html
