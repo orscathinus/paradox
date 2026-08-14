@@ -1,0 +1,4 @@
+Paradox Atlas v1.0.7
+India Event Bank revamp
+69 cinematic events across six uneven volumes
+Universal, path-reactive, and path-specific event scopes
