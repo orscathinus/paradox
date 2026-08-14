@@ -1,0 +1,6 @@
+Paradox Atlas v1.0.6
+
+Release scope:
+- Reduced India focus-tree card clutter with fixed-height nodes and two-line excerpts.
+- Preserved full lore in hover previews and focus dossiers.
+- Updated current v1.0.4 and v1.0.5 display labels to v1.0.6 across the live-facing Atlas, South Asia, India overview, focus tree, and dossier pages.
